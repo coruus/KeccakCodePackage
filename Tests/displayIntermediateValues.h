@@ -16,14 +16,27 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 #include <stdio.h>
 
-void displaySetIntermediateValueFile(FILE *f);
+void displaySetIntermediateValueFile(FILE* f);
 void displaySetLevel(int level);
-void displayBytes(int level, const char *text, const unsigned char *bytes, unsigned int size);
-void displayBits(int level, const char *text, const unsigned char *data, unsigned int size, int MSBfirst);
-void displayStateAsBytes(int level, const char *text, const unsigned char *state);
-void displayStateAs32bitWords(int level, const char *text, const unsigned int *state);
-void displayStateAs64bitWords(int level, const char *text, const unsigned long long int *state);
+void displayBytes(int level,
+                  const char* text,
+                  const unsigned char* bytes,
+                  unsigned int size);
+void displayBits(int level,
+                 const char* text,
+                 const unsigned char* data,
+                 unsigned int size,
+                 int MSBfirst);
+void displayStateAsBytes(int level,
+                         const char* text,
+                         const unsigned char* state);
+void displayStateAs32bitWords(int level,
+                              const char* text,
+                              const unsigned int* state);
+void displayStateAs64bitWords(int level,
+                              const char* text,
+                              const unsigned long long int* state);
 void displayRoundNumber(int level, unsigned int i);
-void displayText(int level, const char *text);
+void displayText(int level, const char* text);
 
 #endif

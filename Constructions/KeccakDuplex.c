@@ -18,72 +18,92 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "displayIntermediateValues.h"
 #endif
 
-int Keccak_DuplexInitialize(Keccak_DuplexInstance *instance, unsigned int rate, unsigned int capacity)
-{
-    if (rate+capacity != 1600)
-        return 1;
-    if ((rate <= 2) || (rate > 1600))
-        return 1;
-    KeccakF1600_Initialize();
-    instance->rate = rate;
-    KeccakF1600_StateInitialize(instance->state);
-    return 0;
+int Keccak_DuplexInitialize(Keccak_DuplexInstance* instance,
+                            unsigned int rate,
+                            unsigned int capacity) {
+  if (rate + capacity != 1600) return 1;
+  if ((rate <= 2) || (rate > 1600)) return 1;
+  KeccakF1600_Initialize();
+  instance->rate = rate;
+  KeccakF1600_StateInitialize(instance->state);
+  return 0;
 }
 
-int Keccak_Duplexing(Keccak_DuplexInstance *instance, const unsigned char *sigmaBegin, unsigned int sigmaBeginByteLen, unsigned char *Z, unsigned int ZByteLen, unsigned char delimitedSigmaEnd)
-{
-    unsigned char delimitedSigmaEnd1[1];
-    const unsigned int rho_max = instance->rate - 2;
-    
-    if (delimitedSigmaEnd == 0)
-        return 1;
-    if (sigmaBeginByteLen*8 > rho_max)
-        return 1;
-    if (rho_max - sigmaBeginByteLen*8 < 7) {
-        unsigned int maxBitsInDelimitedSigmaEnd = rho_max - sigmaBeginByteLen*8;
-        if (delimitedSigmaEnd >= (1 << (maxBitsInDelimitedSigmaEnd+1)))
-            return 1;
-    }
-    if (ZByteLen > (instance->rate+7)/8)
-        return 1; // The output length must not be greater than the rate (rounded up to a byte)
+int Keccak_Duplexing(Keccak_DuplexInstance* instance,
+                     const unsigned char* sigmaBegin,
+                     unsigned int sigmaBeginByteLen,
+                     unsigned char* Z,
+                     unsigned int ZByteLen,
+                     unsigned char delimitedSigmaEnd) {
+  unsigned char delimitedSigmaEnd1[1];
+  const unsigned int rho_max = instance->rate - 2;
 
-    if ((sigmaBeginByteLen%KeccakF_laneInBytes) > 0) {
-        unsigned int offsetBeyondLane = (sigmaBeginByteLen/KeccakF_laneInBytes)*KeccakF_laneInBytes;
-        unsigned int beyondLaneBytes = sigmaBeginByteLen%KeccakF_laneInBytes;
-        KeccakF1600_StateXORBytesInLane(instance->state, sigmaBeginByteLen/KeccakF_laneInBytes, 
-            sigmaBegin+offsetBeyondLane, 0, beyondLaneBytes);
-    }
+  if (delimitedSigmaEnd == 0) return 1;
+  if (sigmaBeginByteLen * 8 > rho_max) return 1;
+  if (rho_max - sigmaBeginByteLen * 8 < 7) {
+    unsigned int maxBitsInDelimitedSigmaEnd = rho_max - sigmaBeginByteLen * 8;
+    if (delimitedSigmaEnd >= (1 << (maxBitsInDelimitedSigmaEnd + 1))) return 1;
+  }
+  if (ZByteLen > (instance->rate + 7) / 8)
+    return 1;  // The output length must not be greater than the rate (rounded
+               // up to a byte)
 
-    #ifdef KeccakReference
-    {
-        unsigned char block[KeccakF_width/8];
-        memcpy(block, sigmaBegin, sigmaBeginByteLen);
-        block[sigmaBeginByteLen] = delimitedSigmaEnd;
-        memset(block+sigmaBeginByteLen+1, 0, ((instance->rate+63)/64)*8-sigmaBeginByteLen-1);
-        block[(instance->rate-1)/8] |= 1 << ((instance->rate-1) % 8);
-        displayBytes(1, "Block to be absorbed (after padding)", block, (instance->rate+7)/8);
-    }
-    #endif
+  if ((sigmaBeginByteLen % KeccakF_laneInBytes) > 0) {
+    unsigned int offsetBeyondLane =
+        (sigmaBeginByteLen / KeccakF_laneInBytes) * KeccakF_laneInBytes;
+    unsigned int beyondLaneBytes = sigmaBeginByteLen % KeccakF_laneInBytes;
+    KeccakF1600_StateXORBytesInLane(instance->state,
+                                    sigmaBeginByteLen / KeccakF_laneInBytes,
+                                    sigmaBegin + offsetBeyondLane,
+                                    0,
+                                    beyondLaneBytes);
+  }
 
-    delimitedSigmaEnd1[0] = delimitedSigmaEnd;
-    // Last few bits, whose delimiter coincides with first bit of padding
-    KeccakF1600_StateXORBytesInLane(instance->state, sigmaBeginByteLen/KeccakF_laneInBytes, 
-        delimitedSigmaEnd1, sigmaBeginByteLen%KeccakF_laneInBytes, 1);
-    // Second bit of padding
-    KeccakF1600_StateComplementBit(instance->state, instance->rate - 1);
-    KeccakF1600_StateXORPermuteExtract(instance->state, sigmaBegin, sigmaBeginByteLen/KeccakF_laneInBytes, 
-        Z, ZByteLen/KeccakF_laneInBytes);
+#ifdef KeccakReference
+  {
+    unsigned char block[KeccakF_width / 8];
+    memcpy(block, sigmaBegin, sigmaBeginByteLen);
+    block[sigmaBeginByteLen] = delimitedSigmaEnd;
+    memset(block + sigmaBeginByteLen + 1,
+           0,
+           ((instance->rate + 63) / 64) * 8 - sigmaBeginByteLen - 1);
+    block[(instance->rate - 1) / 8] |= 1 << ((instance->rate - 1) % 8);
+    displayBytes(1,
+                 "Block to be absorbed (after padding)",
+                 block,
+                 (instance->rate + 7) / 8);
+  }
+#endif
 
-    if ((ZByteLen%KeccakF_laneInBytes) > 0) {
-        unsigned int offsetBeyondLane = (ZByteLen/KeccakF_laneInBytes)*KeccakF_laneInBytes;
-        unsigned int beyondLaneBytes = ZByteLen%KeccakF_laneInBytes;
-        KeccakF1600_StateExtractBytesInLane(instance->state, ZByteLen/KeccakF_laneInBytes, 
-            Z+offsetBeyondLane, 0, beyondLaneBytes);
-    }
-    if (ZByteLen*8 > instance->rate) {
-        unsigned char mask = (1 << (instance->rate % 8)) - 1;
-        Z[ZByteLen-1] &= mask;
-    }
+  delimitedSigmaEnd1[0] = delimitedSigmaEnd;
+  // Last few bits, whose delimiter coincides with first bit of padding
+  KeccakF1600_StateXORBytesInLane(instance->state,
+                                  sigmaBeginByteLen / KeccakF_laneInBytes,
+                                  delimitedSigmaEnd1,
+                                  sigmaBeginByteLen % KeccakF_laneInBytes,
+                                  1);
+  // Second bit of padding
+  KeccakF1600_StateComplementBit(instance->state, instance->rate - 1);
+  KeccakF1600_StateXORPermuteExtract(instance->state,
+                                     sigmaBegin,
+                                     sigmaBeginByteLen / KeccakF_laneInBytes,
+                                     Z,
+                                     ZByteLen / KeccakF_laneInBytes);
 
-    return 0;
+  if ((ZByteLen % KeccakF_laneInBytes) > 0) {
+    unsigned int offsetBeyondLane =
+        (ZByteLen / KeccakF_laneInBytes) * KeccakF_laneInBytes;
+    unsigned int beyondLaneBytes = ZByteLen % KeccakF_laneInBytes;
+    KeccakF1600_StateExtractBytesInLane(instance->state,
+                                        ZByteLen / KeccakF_laneInBytes,
+                                        Z + offsetBeyondLane,
+                                        0,
+                                        beyondLaneBytes);
+  }
+  if (ZByteLen * 8 > instance->rate) {
+    unsigned char mask = (1 << (instance->rate % 8)) - 1;
+    Z[ZByteLen - 1] &= mask;
+  }
+
+  return 0;
 }

@@ -15,103 +15,110 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "displayIntermediateValues.h"
 #include "KeccakF-1600-interface.h"
 
-FILE *intermediateValueFile = 0;
+FILE* intermediateValueFile = 0;
 int displayLevel = 0;
 
-void displaySetIntermediateValueFile(FILE *f)
-{
-    intermediateValueFile = f;
+void displaySetIntermediateValueFile(FILE* f) { intermediateValueFile = f; }
+
+void displaySetLevel(int level) { displayLevel = level; }
+
+void displayBytes(int level,
+                  const char* text,
+                  const unsigned char* bytes,
+                  unsigned int size) {
+  unsigned int i;
+
+  if ((intermediateValueFile) && (level <= displayLevel)) {
+    fprintf(intermediateValueFile, "%s:\n", text);
+    for (i = 0; i < size; i++)
+      fprintf(intermediateValueFile, "%02X ", bytes[i]);
+    fprintf(intermediateValueFile, "\n");
+    fprintf(intermediateValueFile, "\n");
+  }
 }
 
-void displaySetLevel(int level)
-{
-    displayLevel = level;
-}
+void displayBits(int level,
+                 const char* text,
+                 const unsigned char* data,
+                 unsigned int size,
+                 int MSBfirst) {
+  unsigned int i, iByte, iBit;
 
-void displayBytes(int level, const char *text, const unsigned char *bytes, unsigned int size)
-{
-    unsigned int i;
-
-    if ((intermediateValueFile) && (level <= displayLevel)) {
-        fprintf(intermediateValueFile, "%s:\n", text);
-        for(i=0; i<size; i++)
-            fprintf(intermediateValueFile, "%02X ", bytes[i]);
-        fprintf(intermediateValueFile, "\n");
-        fprintf(intermediateValueFile, "\n");
+  if ((intermediateValueFile) && (level <= displayLevel)) {
+    fprintf(intermediateValueFile, "%s:\n", text);
+    for (i = 0; i < size; i++) {
+      iByte = i / 8;
+      iBit = i % 8;
+      if (MSBfirst)
+        fprintf(
+            intermediateValueFile, "%d ", ((data[iByte] << iBit) & 0x80) != 0);
+      else
+        fprintf(
+            intermediateValueFile, "%d ", ((data[iByte] >> iBit) & 0x01) != 0);
     }
+    fprintf(intermediateValueFile, "\n");
+    fprintf(intermediateValueFile, "\n");
+  }
 }
 
-void displayBits(int level, const char *text, const unsigned char *data, unsigned int size, int MSBfirst)
-{
-    unsigned int i, iByte, iBit;
+void displayStateAsBytes(int level,
+                         const char* text,
+                         const unsigned char* state) {
+  displayBytes(level, text, state, KeccakF_width / 8);
+}
 
-    if ((intermediateValueFile) && (level <= displayLevel)) {
-        fprintf(intermediateValueFile, "%s:\n", text);
-        for(i=0; i<size; i++) {
-            iByte = i/8;
-            iBit = i%8;
-            if (MSBfirst)
-                fprintf(intermediateValueFile, "%d ", ((data[iByte] << iBit) & 0x80) != 0);
-            else
-                fprintf(intermediateValueFile, "%d ", ((data[iByte] >> iBit) & 0x01) != 0);
-        }
+void displayStateAs32bitWords(int level,
+                              const char* text,
+                              const unsigned int* state) {
+  unsigned int i;
+
+  if ((intermediateValueFile) && (level <= displayLevel)) {
+    fprintf(intermediateValueFile, "%s:\n", text);
+    for (i = 0; i < KeccakF_width / 64; i++) {
+      fprintf(intermediateValueFile,
+              "%08X:%08X",
+              (unsigned int)state[2 * i + 0],
+              (unsigned int)state[2 * i + 1]);
+      if ((i % 5) == 4)
         fprintf(intermediateValueFile, "\n");
-        fprintf(intermediateValueFile, "\n");
+      else
+        fprintf(intermediateValueFile, " ");
     }
+  }
 }
 
-void displayStateAsBytes(int level, const char *text, const unsigned char *state)
-{
-    displayBytes(level, text, state, KeccakF_width/8);
-}
+void displayStateAs64bitWords(int level,
+                              const char* text,
+                              const unsigned long long int* state) {
+  unsigned int i;
 
-void displayStateAs32bitWords(int level, const char *text, const unsigned int *state)
-{
-    unsigned int i;
-
-    if ((intermediateValueFile) && (level <= displayLevel)) {
-        fprintf(intermediateValueFile, "%s:\n", text);
-        for(i=0; i<KeccakF_width/64; i++) {
-            fprintf(intermediateValueFile, "%08X:%08X", (unsigned int)state[2*i+0], (unsigned int)state[2*i+1]);
-            if ((i%5) == 4)
-                fprintf(intermediateValueFile, "\n");
-            else
-                fprintf(intermediateValueFile, " ");
-        }
-    }
-}
-
-void displayStateAs64bitWords(int level, const char *text, const unsigned long long int *state)
-{
-    unsigned int i;
-
-    if ((intermediateValueFile) && (level <= displayLevel)) {
-        fprintf(intermediateValueFile, "%s:\n", text);
-        for(i=0; i<KeccakF_width/64; i++) {
-            fprintf(intermediateValueFile, "%08X", (unsigned int)(state[i] >> 32));
-            fprintf(intermediateValueFile, "%08X", (unsigned int)(state[i] & 0xFFFFFFFFULL));
-            if ((i%5) == 4)
-                fprintf(intermediateValueFile, "\n");
-            else
-                fprintf(intermediateValueFile, " ");
-        }
-    }
-}
-
-void displayRoundNumber(int level, unsigned int i)
-{
-    if ((intermediateValueFile) && (level <= displayLevel)) {
+  if ((intermediateValueFile) && (level <= displayLevel)) {
+    fprintf(intermediateValueFile, "%s:\n", text);
+    for (i = 0; i < KeccakF_width / 64; i++) {
+      fprintf(intermediateValueFile, "%08X", (unsigned int)(state[i] >> 32));
+      fprintf(intermediateValueFile,
+              "%08X",
+              (unsigned int)(state[i] & 0xFFFFFFFFULL));
+      if ((i % 5) == 4)
         fprintf(intermediateValueFile, "\n");
-        fprintf(intermediateValueFile, "--- Round %d ---\n", i);
-        fprintf(intermediateValueFile, "\n");
+      else
+        fprintf(intermediateValueFile, " ");
     }
+  }
 }
 
-void displayText(int level, const char *text)
-{
-    if ((intermediateValueFile) && (level <= displayLevel)) {
-        fprintf(intermediateValueFile, "%s", text);
-        fprintf(intermediateValueFile, "\n");
-        fprintf(intermediateValueFile, "\n");
-    }
+void displayRoundNumber(int level, unsigned int i) {
+  if ((intermediateValueFile) && (level <= displayLevel)) {
+    fprintf(intermediateValueFile, "\n");
+    fprintf(intermediateValueFile, "--- Round %d ---\n", i);
+    fprintf(intermediateValueFile, "\n");
+  }
+}
+
+void displayText(int level, const char* text) {
+  if ((intermediateValueFile) && (level <= displayLevel)) {
+    fprintf(intermediateValueFile, "%s", text);
+    fprintf(intermediateValueFile, "\n");
+    fprintf(intermediateValueFile, "\n");
+  }
 }

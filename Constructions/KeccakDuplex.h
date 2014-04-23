@@ -21,7 +21,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #endif
 
 #if defined(__GNUC__)
-#define ALIGN __attribute__ ((aligned(32)))
+#define ALIGN __attribute__((aligned(32)))
 #elif defined(_MSC_VER)
 #define ALIGN __declspec(align(32))
 #else
@@ -35,10 +35,10 @@ http://creativecommons.org/publicdomain/zero/1.0/
   * the rate.
   */
 ALIGN typedef struct Keccak_DuplexInstanceStruct {
-    /** The state processed by the permutation. */
-    ALIGN unsigned char state[KeccakF_width/8];
-    /** The value of the rate in bits.*/
-    unsigned int rate;
+  /** The state processed by the permutation. */
+  ALIGN unsigned char state[KeccakF_width / 8];
+  /** The value of the rate in bits.*/
+  unsigned int rate;
 } Keccak_DuplexInstance;
 
 /**
@@ -46,44 +46,62 @@ ALIGN typedef struct Keccak_DuplexInstanceStruct {
   * @param  duplexInstance  Pointer to the duplex instance to be initialized.
   * @param  rate        The value of the rate r.
   * @param  capacity    The value of the capacity c.
-  * @pre    One must have r+c=1600 in this implementation. 
-  * @pre    3 ≤ @a rate ≤ 1600, and otherwise the value of the rate is unrestricted.
+  * @pre    One must have r+c=1600 in this implementation.
+  * @pre    3 ≤ @a rate ≤ 1600, and otherwise the value of the rate is
+ * unrestricted.
   * @return Zero if successful, 1 otherwise.
   */
-int Keccak_DuplexInitialize(Keccak_DuplexInstance *duplexInstance, unsigned int rate, unsigned int capacity);
+int Keccak_DuplexInitialize(Keccak_DuplexInstance* duplexInstance,
+                            unsigned int rate,
+                            unsigned int capacity);
 
 /**
-  * Function to make a duplexing call to the duplex object initialized 
+  * Function to make a duplexing call to the duplex object initialized
   * with Keccak_DuplexInitialize().
-  * @param  duplexInstance  Pointer to the duplex instance initialized 
+  * @param  duplexInstance  Pointer to the duplex instance initialized
   *                     by Keccak_DuplexInitialize().
   * @param  sigmaBegin  Pointer to the first part of the input σ given as bytes.
   *                     Trailing bits are given in @a delimitedSigmaEnd.
-  * @param  sigmaBeginByteLen   The number of input bytes provided in @a sigmaBegin.
+  * @param  sigmaBeginByteLen   The number of input bytes provided in @a
+ * sigmaBegin.
   * @param  Z           Pointer to the buffer where to store the output data Z.
   * @param  ZByteLen    The number of output bytes desired for Z.
-  *                     If @a ZByteLen*8 is greater than the rate r, 
+  *                     If @a ZByteLen*8 is greater than the rate r,
   *                     the last byte contains only r modulo 8 bits,
   *                     in the least significant bits.
-  * @param  delimitedSigmaEnd   Byte containing from 0 to 7 trailing bits that must be 
+  * @param  delimitedSigmaEnd   Byte containing from 0 to 7 trailing bits that
+ * must be
   *                     appended to the input data in @a sigmaBegin.
-  *                     These <i>n</i>=|σ| mod 8 bits must be in the least significant bit positions.
-  *                     These bits must be delimited with a bit 1 at position <i>n</i>
+  *                     These <i>n</i>=|σ| mod 8 bits must be in the least
+ * significant bit positions.
+  *                     These bits must be delimited with a bit 1 at position
+ * <i>n</i>
   *                     (counting from 0=LSB to 7=MSB) and followed by bits 0
   *                     from position <i>n</i>+1 to position 7.
   *                     Some examples:
-  *                         - If |σ| is a multiple of 8, then @a delimitedSigmaEnd must be 0x01.
-  *                         - If |σ| mod 8 is 1 and the last bit is 1 then @a delimitedSigmaEnd must be 0x03.
-  *                         - If |σ| mod 8 is 4 and the last 4 bits are 0,0,0,1 then @a delimitedSigmaEnd must be 0x18.
-  *                         - If |σ| mod 8 is 6 and the last 6 bits are 1,1,1,0,0,1 then @a delimitedSigmaEnd must be 0x67.
+  *                         - If |σ| is a multiple of 8, then @a
+ * delimitedSigmaEnd must be 0x01.
+  *                         - If |σ| mod 8 is 1 and the last bit is 1 then @a
+ * delimitedSigmaEnd must be 0x03.
+  *                         - If |σ| mod 8 is 4 and the last 4 bits are 0,0,0,1
+ * then @a delimitedSigmaEnd must be 0x18.
+  *                         - If |σ| mod 8 is 6 and the last 6 bits are
+ * 1,1,1,0,0,1 then @a delimitedSigmaEnd must be 0x67.
   *                     .
-  * @note   The input bits σ are the result of the concatenation of the bytes in @a sigmaBegin
-  *                     and the bits in @a delimitedSigmaEnd before the delimiter.
+  * @note   The input bits σ are the result of the concatenation of the bytes in
+ * @a sigmaBegin
+  *                     and the bits in @a delimitedSigmaEnd before the
+ * delimiter.
   * @pre    @a delimitedSigmaEnd ≠ 0x00
   * @pre    @a sigmaBeginByteLen*8+<i>n</i> ≤ (r-2)
   * @pre    @a ZByteLen ≤ ceil(r/8)
   * @return Zero if successful, 1 otherwise.
   */
-int Keccak_Duplexing(Keccak_DuplexInstance *duplexInstance, const unsigned char *sigmaBegin, unsigned int sigmaBeginByteLen, unsigned char *Z, unsigned int ZByteLen, unsigned char delimitedSigmaEnd);
+int Keccak_Duplexing(Keccak_DuplexInstance* duplexInstance,
+                     const unsigned char* sigmaBegin,
+                     unsigned int sigmaBeginByteLen,
+                     unsigned char* Z,
+                     unsigned int ZByteLen,
+                     unsigned char delimitedSigmaEnd);
 
 #endif

@@ -15,7 +15,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #define _KeccakF1600Reference_h_
 #include "KeccakF-1600-interface.h"
 
-void displayRoundConstants(FILE *f);
-void displayRhoOffsets(FILE *f);
+void displayRoundConstants(FILE* f);
+void displayRhoOffsets(FILE* f);
 
 #endif

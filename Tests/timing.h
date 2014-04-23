@@ -10,4 +10,3 @@ questions, please refer to our website: http://keccak.noekeon.org/
 void doTiming();
 
 #endif
-
