@@ -129,43 +129,20 @@ void KeccakF1600_StateInitialize(void *argState)
 void KeccakF1600_StateXORBytesInLane(void *argState, unsigned int lanePosition, const unsigned char *data, unsigned int offset, unsigned int length)
 {
     unsigned int i;
-    #if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     unsigned char * state = (unsigned char*)argState + lanePosition * sizeof(tKeccakLane) + offset;
     for(i=0; i<length; i++)
         ((unsigned char *)state)[i] ^= data[i];
-    #else
-    tKeccakLane lane = 0;
-    for(i=0; i<length; i++)
-        lane |= ((tKeccakLane)data[i]) << ((i+offset)*8);
-    ((tKeccakLane*)state)[lanePosition] ^= lane;
-    #endif
 }
 
 /* ---------------------------------------------------------------- */
 
 void KeccakF1600_StateXORLanes(void *state, const unsigned char *data, unsigned int laneCount)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     tSmallUInt i;
     laneCount *= sizeof(tKeccakLane);
     for( i = 0; i < laneCount; ++i) {
         ((unsigned char*)state)[i] ^= data[i];
     }
-#else
-    tSmallUInt i;
-    UINT8 *curData = data;
-    for(i=0; i<laneCount; i++, curData+=8) {
-        tKeccakLane lane = (tKeccakLane)curData[0]
-            | ((tKeccakLane)curData[1] << 8)
-            | ((tKeccakLane)curData[2] << 16)
-            | ((tKeccakLane)curData[3] << 24)
-            | ((tKeccakLane)curData[4] << 32)
-            | ((tKeccakLane)curData[5] << 40)
-            | ((tKeccakLane)curData[6] << 48)
-            | ((tKeccakLane)curData[7] << 56);
-        ((tKeccakLane*)state)[i] ^= lane;
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */
@@ -245,35 +222,14 @@ void KeccakF1600_StatePermute(void *argState)
 
 void KeccakF1600_StateExtractBytesInLane(const void *state, unsigned int lanePosition, unsigned char *data, unsigned int offset, unsigned int length)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     memcpy(data, ((UINT8*)&((tKeccakLane*)state)[lanePosition])+offset, length);
-#else
-    tSmallUInt i;
-    tKeccakLane lane = ((tKeccakLane*)state)[lanePosition];
-    lane >>= offset*8;
-    for(i=0; i<length; i++) {
-        data[i] = lane & 0xFF;
-        lane >>= 8;
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */
 
 void KeccakF1600_StateExtractLanes(const void *state, unsigned char *data, unsigned int laneCount)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     memcpy(data, state, laneCount*8);
-#else
-    tSmallUInt i, j;
-    for(i=0; i<laneCount; i++)
-    {
-        for(j=0; j<(64/8); j++)
-        {
-            bytes[data+(i*8] = state[i] >> (8*j)) & 0xFF;
-        }
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */

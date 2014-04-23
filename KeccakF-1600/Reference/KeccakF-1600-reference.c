@@ -133,18 +133,9 @@ void iota(UINT64 *A, unsigned int indexRound);
 
 void KeccakF1600_StatePermute(void *state)
 {
-#if (PLATFORM_BYTE_ORDER != IS_LITTLE_ENDIAN)
-    UINT64 stateAsWords[KeccakF_width/64];
-#endif
 
     displayStateAsBytes(1, "Input of permutation", (const unsigned char *)state);
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     KeccakF1600OnWords((UINT64*)state);
-#else
-    fromBytesToWords(stateAsWords, (const unsigned char *)state);
-    KeccakF1600OnWords(stateAsWords);
-    fromWordsToBytes((unsigned char *)state, stateAsWords);
-#endif
     displayStateAsBytes(1, "State after permutation", (const unsigned char *)state);
 }
 

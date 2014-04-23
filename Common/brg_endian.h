@@ -105,38 +105,5 @@
 
 /*  if the platform byte order could not be determined, then try to */
 /*  set this define using common machine defines                    */
-#if !defined(PLATFORM_BYTE_ORDER)
-
-#if   defined( __alpha__ ) || defined( __alpha ) || defined( i386 )       || \
-      defined( __i386__ )  || defined( _M_I86 )  || defined( _M_IX86 )    || \
-      defined( __OS2__ )   || defined( sun386 )  || defined( __TURBOC__ ) || \
-      defined( vax )       || defined( vms )     || defined( VMS )        || \
-      defined( __VMS )     || defined( _M_X64 )
-#  define PLATFORM_BYTE_ORDER IS_LITTLE_ENDIAN
-
-#elif defined( AMIGA )   || defined( applec )    || defined( __AS400__ )  || \
-      defined( _CRAY )   || defined( __hppa )    || defined( __hp9000 )   || \
-      defined( ibm370 )  || defined( mc68000 )   || defined( m68k )       || \
-      defined( __MRC__ ) || defined( __MVS__ )   || defined( __MWERKS__ ) || \
-      defined( sparc )   || defined( __sparc)    || defined( SYMANTEC_C ) || \
-      defined( __VOS__ ) || defined( __TIGCC__ ) || defined( __TANDEM )   || \
-      defined( THINK_C ) || defined( __VMCMS__ ) || defined( _AIX )
-#  define PLATFORM_BYTE_ORDER IS_BIG_ENDIAN
-
-#elif defined(__arm__)
-# ifdef __BIG_ENDIAN
-#  define PLATFORM_BYTE_ORDER IS_BIG_ENDIAN
-# else
-#  define PLATFORM_BYTE_ORDER IS_LITTLE_ENDIAN
-# endif
-#elif 1     /* **** EDIT HERE IF NECESSARY **** */
-#  define PLATFORM_BYTE_ORDER IS_LITTLE_ENDIAN
-#elif 0     /* **** EDIT HERE IF NECESSARY **** */
-#  define PLATFORM_BYTE_ORDER IS_BIG_ENDIAN
-#else
-#  error Please edit lines 132 or 134 in brg_endian.h to set the platform byte order
-#endif
-
-#endif
 
 #endif

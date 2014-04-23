@@ -79,19 +79,8 @@ void KeccakF1600_StateXORBytesInLane(void *state, unsigned int lanePosition, con
 
     memset(laneAsBytes, 0, 8);
     memcpy(laneAsBytes+offset, data, length);
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     low = *((UINT32*)(laneAsBytes+0));
     high = *((UINT32*)(laneAsBytes+4));
-#else
-    low = laneAsBytes[0] 
-        | ((UINT32)(laneAsBytes[1]) << 8) 
-        | ((UINT32)(laneAsBytes[2]) << 16)
-        | ((UINT32)(laneAsBytes[3]) << 24);
-    high = laneAsBytes[4] 
-        | ((UINT32)(laneAsBytes[5]) << 8) 
-        | ((UINT32)(laneAsBytes[6]) << 16)
-        | ((UINT32)(laneAsBytes[7]) << 24);
-#endif
     toBitInterleavingAndXOR(low, high, stateAsHalfLanes[lanePosition*2+0], stateAsHalfLanes[lanePosition*2+1], temp, temp0, temp1);
 }
 
@@ -99,7 +88,6 @@ void KeccakF1600_StateXORBytesInLane(void *state, unsigned int lanePosition, con
 
 void KeccakF1600_StateXORLanes(void *state, const unsigned char *data, unsigned int laneCount)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     const UINT32 * pI = (const UINT32 *)data;
     UINT32 * pS = state;
     UINT32 t, x0, x1;
@@ -111,24 +99,6 @@ void KeccakF1600_StateXORLanes(void *state, const unsigned char *data, unsigned 
         memcpy(&high, pI++, 4);
         toBitInterleavingAndXOR(low, high, *(pS++), *(pS++), t, x0, x1);
     }
-#else
-    unsigned int lanePosition;
-    for(lanePosition=0; lanePosition<laneCount; lanePosition++) {
-        UINT8 laneAsBytes[8];
-        memcpy(laneAsBytes, data+lanePosition*8, 8);
-        UINT32 low = laneAsBytes[0] 
-            | ((UINT32)(laneAsBytes[1]) << 8) 
-            | ((UINT32)(laneAsBytes[2]) << 16)
-            | ((UINT32)(laneAsBytes[3]) << 24);
-        UINT32 high = laneAsBytes[4] 
-            | ((UINT32)(laneAsBytes[5]) << 8) 
-            | ((UINT32)(laneAsBytes[6]) << 16)
-            | ((UINT32)(laneAsBytes[7]) << 24);
-        UINT32 even, odd, temp, temp0, temp1;
-        UINT32 *stateAsHalfLanes = (UINT32*)state;
-        toBitInterleavingAndXOR(low, high, stateAsHalfLanes[lanePosition*2+0], stateAsHalfLanes[lanePosition*2+1], temp, temp0, temp1);
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */
@@ -158,19 +128,8 @@ void KeccakF1600_StateExtractBytesInLane(const void *state, unsigned int lanePos
     UINT8 laneAsBytes[8];
 
     fromBitInterleaving(stateAsHalfLanes[lanePosition*2], stateAsHalfLanes[lanePosition*2+1], low, high, temp, temp0, temp1);
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     *((UINT32*)(laneAsBytes+0)) = low;
     *((UINT32*)(laneAsBytes+4)) = high;
-#else
-    laneAsBytes[0] = low & 0xFF;
-    laneAsBytes[1] = (low >> 8) & 0xFF;
-    laneAsBytes[2] = (low >> 16) & 0xFF;
-    laneAsBytes[3] = (low >> 24) & 0xFF;
-    laneAsBytes[4] = high & 0xFF;
-    laneAsBytes[5] = (high >> 8) & 0xFF;
-    laneAsBytes[6] = (high >> 16) & 0xFF;
-    laneAsBytes[7] = (high >> 24) & 0xFF;
-#endif
     memcpy(data, laneAsBytes+offset, length);
 }
 
@@ -178,7 +137,6 @@ void KeccakF1600_StateExtractBytesInLane(const void *state, unsigned int lanePos
 
 void KeccakF1600_StateExtractLanes(const void *state, unsigned char *data, unsigned int laneCount)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     UINT32 * pI = (UINT32 *)data;
     const UINT32 * pS = state;
     UINT32 t, x0, x1;
@@ -190,24 +148,6 @@ void KeccakF1600_StateExtractLanes(const void *state, unsigned char *data, unsig
         memcpy(pI++, &low, 4);
         memcpy(pI++, &high, 4);
     }
-#else
-    unsigned int lanePosition;
-    for(lanePosition=0; lanePosition<laneCount; lanePosition++) {
-        UINT32 *stateAsHalfLanes = (UINT32*)state;
-        UINT32 low, high, temp, temp0, temp1;
-        fromBitInterleaving(stateAsHalfLanes[lanePosition*2], stateAsHalfLanes[lanePosition*2+1], low, high, temp, temp0, temp1);
-        UINT8 laneAsBytes[8];
-        laneAsBytes[0] = low & 0xFF;
-        laneAsBytes[1] = (low >> 8) & 0xFF;
-        laneAsBytes[2] = (low >> 16) & 0xFF;
-        laneAsBytes[3] = (low >> 24) & 0xFF;
-        laneAsBytes[4] = high & 0xFF;
-        laneAsBytes[5] = (high >> 8) & 0xFF;
-        laneAsBytes[6] = (high >> 16) & 0xFF;
-        laneAsBytes[7] = (high >> 24) & 0xFF;
-        memcpy(data+lanePosition*8, laneAsBytes, 8);
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */

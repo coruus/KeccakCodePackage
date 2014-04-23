@@ -16,6 +16,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <string.h>
 #include "KeccakDuplex.h"
 
+void testDuplexOneInstance(FILE *f, unsigned int rate, unsigned int capacity);
 void testDuplexOneInstance(FILE *f, unsigned int rate, unsigned int capacity)
 {
     unsigned char acc[KeccakF_width/8];
@@ -79,7 +80,7 @@ void testDuplexOneInstance(FILE *f, unsigned int rate, unsigned int capacity)
     fprintf(f, "\n\n");
 }
 
-void testDuplex()
+void testDuplex(void)
 {
     FILE *f;
     unsigned int rate;

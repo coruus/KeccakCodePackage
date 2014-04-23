@@ -73,19 +73,12 @@ void KeccakF1600_StateInitialize(void *state)
 
 void KeccakF1600_StateXORBytesInLane(void *state, unsigned int lanePosition, const unsigned char *data, unsigned int offset, unsigned int length)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     if (length == 0)
         return;
     UINT64 lane = 0;
     memcpy(&lane, data, length);
     lane <<= (8-length)*8;
     lane >>= (8-length-offset)*8;
-#else
-    UINT64 lane = 0;
-    unsigned int i;
-    for(i=0; i<length; i++)
-        lane |= ((UINT64)data[i]) << ((i+offset)*8);
-#endif
     ((UINT64*)state)[lanePosition] ^= lane;
 }
 
@@ -93,7 +86,6 @@ void KeccakF1600_StateXORBytesInLane(void *state, unsigned int lanePosition, con
 
 void KeccakF1600_StateXORLanes(void *state, const unsigned char *data, unsigned int laneCount)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     unsigned int i = 0;
     // If either pointer is misaligned, fall back to byte-wise xor.
     if (((((uintptr_t)state) & 7) != 0) || ((((uintptr_t)data) & 7) != 0)) {
@@ -126,21 +118,6 @@ void KeccakF1600_StateXORLanes(void *state, const unsigned char *data, unsigned 
           ((UINT64*)state)[i+0] ^= ((UINT64*)data)[i+0];
       }
     }
-#else
-    unsigned int i;
-    UINT8 *curData = data;
-    for(i=0; i<laneCount; i++, curData+=8) {
-        UINT64 lane = (UINT64)curData[0]
-            | ((UINT64)curData[1] << 8)
-            | ((UINT64)curData[2] << 16)
-            | ((UINT64)curData[3] << 24)
-            | ((UINT64)curData[4] <<32)
-            | ((UINT64)curData[5] << 40)
-            | ((UINT64)curData[6] << 48)
-            | ((UINT64)curData[7] << 56);
-        ((UINT64*)state)[i] ^= lane;
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */
@@ -167,44 +144,19 @@ void KeccakF1600_StateExtractBytesInLane(const void *state, unsigned int lanePos
     if ((lanePosition == 1) || (lanePosition == 2) || (lanePosition == 8) || (lanePosition == 12) || (lanePosition == 17) || (lanePosition == 20))
         lane = ~lane;
 #endif
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     {
         UINT64 lane1[1];
         lane1[0] = lane;
         memcpy(data, (UINT8*)lane1+offset, length);
     }
-#else
-    unsigned int i;
-    lane >>= offset*8;
-    for(i=0; i<length; i++) {
-        data[i] = lane & 0xFF;
-        lane >>= 8;
-    }
-#endif
 }
 
 /* ---------------------------------------------------------------- */
 
-#if (PLATFORM_BYTE_ORDER != IS_LITTLE_ENDIAN)
-void fromWordToBytes(UINT8 *bytes, const UINT64 word)
-{
-    unsigned int i;
-
-    for(i=0; i<(64/8); i++)
-        bytes[i] = (word >> (8*i)) & 0xFF;
-}
-#endif
 
 void KeccakF1600_StateExtractLanes(const void *state, unsigned char *data, unsigned int laneCount)
 {
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     memcpy(data, state, laneCount*8);
-#else
-    unsigned int i;
-
-    for(i=0; i<laneCount; i++)
-        fromWordToBytes(data+(i*8), ((const UINT64*)state)[i]);
-#endif
 #ifdef UseLaneComplementing
     if (laneCount > 1) {
         ((UINT64*)data)[ 1] = ~((UINT64*)data)[ 1];
@@ -229,50 +181,10 @@ void KeccakF1600_StateExtractLanes(const void *state, unsigned char *data, unsig
 
 /* ---------------------------------------------------------------- */
 
-#ifdef ProvideFastAbsorb1344
-void KeccakF1600_StateXORPermuteExtract_absorb1344(void *state, const unsigned char *inData, unsigned int inLaneCount)
-{
-    declareABCDE
-    #if (Unrolling != 24)
-    unsigned int i;
-    #endif
-    UINT64 *stateAsLanes = (UINT64*)state;
-    UINT64 *inDataAsLanes = (UINT64*)inData;
-    
-    copyFromStateAndXOR(A, stateAsLanes, inDataAsLanes, 21)
-    rounds
-    copyToState(stateAsLanes, A)
-}
-#endif
 
-#ifdef ProvideFastSqueeze1344
-void KeccakF1600_StateXORPermuteExtract_squeeze1344(void *state, unsigned char *outData, unsigned int outLaneCount)
-{
-    declareABCDE
-    #if (Unrolling != 24)
-    unsigned int i;
-    #endif
-    UINT64 *stateAsLanes = (UINT64*)state;
-    UINT64 *outDataAsLanes = (UINT64*)outData;
-    
-    copyFromStateAndXOR(A, stateAsLanes, outDataAsLanes, 0)
-    rounds
-    copyToStateAndOutput(A, stateAsLanes, outDataAsLanes, 21)
-}
-#endif
 
 void KeccakF1600_StateXORPermuteExtract(void *state, const unsigned char *inData, unsigned int inLaneCount, unsigned char *outData, unsigned int outLaneCount)
 {
-#ifdef ProvideFastAbsorb1344
-    if ((inLaneCount == 21) && (outLaneCount == 0))
-        KeccakF1600_StateXORPermuteExtract_absorb1344(state, inData, inLaneCount);
-    else
-#endif
-#ifdef ProvideFastSqueeze1344
-    if ((inLaneCount == 0) && (outLaneCount == 21))
-        KeccakF1600_StateXORPermuteExtract_squeeze1344(state, outData, outLaneCount);
-    else
-#endif
     {
         declareABCDE
         #if (Unrolling != 24)
