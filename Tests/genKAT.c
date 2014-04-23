@@ -12,7 +12,7 @@ This code is based on genKAT.c by NIST.
 #include <time.h>
 #include <ctype.h>
 
-#include "KeccakHash.h"
+#include "Modes/KeccakHash.h"
 
 #define MAX_MARKER_LEN 50
 #define SUBMITTER_INFO_LEN 128
@@ -26,20 +26,7 @@ typedef enum {
 } STATUS_CODES;
 
 #define ExcludeExtremelyLong
-
 #define SqueezingOutputLength 4096
-
-STATUS_CODES genShortMsgHash(unsigned int rate,
-                             unsigned int capacity,
-                             unsigned char delimitedSuffix,
-                             unsigned int hashbitlen,
-                             unsigned int squeezedOutputLength,
-                             const char* fileName,
-                             const char* description);
-int FindMarker(FILE* infile, const char* marker);
-int ReadHex(FILE* infile, BitSequence* A, int Length, char* str);
-void fprintBstr(FILE* fp, char* S, BitSequence* A, int L);
-void convertShortMsgToPureLSB(void);
 
 STATUS_CODES
 genKAT_main(void) {
@@ -221,7 +208,8 @@ int FindMarker(FILE* infile, const char* marker) {
   while (1) {
     if (!strncmp(line, marker, len)) return 1;
 
-    for (i = 0; i < len - 1; i++) line[i] = line[i + 1];
+    for (i = 0; i < len - 1; i++)
+      line[i] = line[i + 1];
     if ((line[len - 1] = fgetc(infile)) == EOF) return 0;
     line[len] = '\0';
   }
@@ -262,7 +250,8 @@ int ReadHex(FILE* infile, BitSequence* A, int Length, char* str) {
       else if ((ch >= 'a') && (ch <= 'f'))
         ich = ch - 'a' + 10;
 
-      for (i = 0; i < Length - 1; i++) A[i] = (A[i] << 4) | (A[i + 1] >> 4);
+      for (i = 0; i < Length - 1; i++)
+        A[i] = (A[i] << 4) | (A[i + 1] >> 4);
       A[Length - 1] = (A[Length - 1] << 4) | ich;
     }
   else
@@ -276,7 +265,8 @@ void fprintBstr(FILE* fp, char* S, BitSequence* A, int L) {
 
   fprintf(fp, "%s", S);
 
-  for (i = 0; i < L; i++) fprintf(fp, "%02X", A[i]);
+  for (i = 0; i < L; i++)
+    fprintf(fp, "%02X", A[i]);
 
   if (L == 0) fprintf(fp, "00");
 

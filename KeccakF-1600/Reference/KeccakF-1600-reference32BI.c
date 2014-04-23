@@ -276,16 +276,19 @@ void theta(UINT32* A) {
   for (x = 0; x < 5; x++) {
     for (z = 0; z < 2; z++) {
       C[x][z] = 0;
-      for (y = 0; y < 5; y++) C[x][z] ^= A[index(x, y, z)];
+      for (y = 0; y < 5; y++)
+        C[x][z] ^= A[index(x, y, z)];
     }
   }
   for (x = 0; x < 5; x++) {
     ROL64(C[(x + 1) % 5][0], C[(x + 1) % 5][1], &(D[x][0]), &(D[x][1]), 1);
-    for (z = 0; z < 2; z++) D[x][z] ^= C[(x + 4) % 5][z];
+    for (z = 0; z < 2; z++)
+      D[x][z] ^= C[(x + 4) % 5][z];
   }
   for (x = 0; x < 5; x++)
     for (y = 0; y < 5; y++)
-      for (z = 0; z < 2; z++) A[index(x, y, z)] ^= D[x][z];
+      for (z = 0; z < 2; z++)
+        A[index(x, y, z)] ^= D[x][z];
 }
 
 void rho(UINT32* A) {
@@ -306,7 +309,8 @@ void pi(UINT32* A) {
 
   for (x = 0; x < 5; x++)
     for (y = 0; y < 5; y++)
-      for (z = 0; z < 2; z++) tempA[index(x, y, z)] = A[index(x, y, z)];
+      for (z = 0; z < 2; z++)
+        tempA[index(x, y, z)] = A[index(x, y, z)];
   for (x = 0; x < 5; x++)
     for (y = 0; y < 5; y++)
       for (z = 0; z < 2; z++)
@@ -323,7 +327,8 @@ void chi(UINT32* A) {
         C[x][z] = A[index(x, y, z)] ^
                   ((~A[index(x + 1, y, z)]) & A[index(x + 2, y, z)]);
     for (x = 0; x < 5; x++)
-      for (z = 0; z < 2; z++) A[index(x, y, z)] = C[x][z];
+      for (z = 0; z < 2; z++)
+        A[index(x, y, z)] = C[x][z];
   }
 }
 

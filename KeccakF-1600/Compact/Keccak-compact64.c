@@ -18,7 +18,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 #define USE_MEMSET
 //#define DIVISION_INSTRUCTION    //comment if no division instruction or more
-//compact when not using division
+// compact when not using division
 #define UNROLL_CHILOOP  // comment more compact using for loop
 
 typedef unsigned char UINT8;
@@ -122,7 +122,8 @@ void KeccakF1600_StateXORBytesInLane(void* argState,
   unsigned int i;
   unsigned char* state =
       (unsigned char*)argState + lanePosition * sizeof(tKeccakLane) + offset;
-  for (i = 0; i < length; i++) ((unsigned char*)state)[i] ^= data[i];
+  for (i = 0; i < length; i++)
+    ((unsigned char*)state)[i] ^= data[i];
 }
 
 /* ---------------------------------------------------------------- */

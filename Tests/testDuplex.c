@@ -10,11 +10,12 @@ To the extent possible under law, the implementer has waived all copyright
 and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
+#include "Constructions/KeccakDuplex.h"
+#include "Tests/tests.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "KeccakDuplex.h"
 
 void testDuplexOneInstance(FILE* f, unsigned int rate, unsigned int capacity);
 void testDuplexOneInstance(FILE* f, unsigned int rate, unsigned int capacity) {
@@ -49,7 +50,8 @@ void testDuplexOneInstance(FILE* f, unsigned int rate, unsigned int capacity) {
     Keccak_Duplexing(
         &duplex, sigma, sigmaBitLength / 8, Z, ZByteLen, delimitedSigmaEnd);
 
-    for (i = 0; i < ZByteLen; i++) acc[i] ^= Z[i];
+    for (i = 0; i < ZByteLen; i++)
+      acc[i] ^= Z[i];
     for (i = ZByteLen; i < sizeof(Z); i++)
       if (Z[i] != filler) {
         printf("Out of range data written!\n");
@@ -64,7 +66,8 @@ void testDuplexOneInstance(FILE* f, unsigned int rate, unsigned int capacity) {
     memset(Z, filler, sizeof(Z));
     Keccak_Duplexing(&duplex, 0, 0, Z, ZByteLen, 0x01);
 
-    for (i = 0; i < ZByteLen; i++) acc[i] ^= Z[i];
+    for (i = 0; i < ZByteLen; i++)
+      acc[i] ^= Z[i];
     for (i = ZByteLen; i < sizeof(Z); i++)
       if (Z[i] != filler) {
         printf("Out of range data written!\n");
@@ -73,7 +76,8 @@ void testDuplexOneInstance(FILE* f, unsigned int rate, unsigned int capacity) {
   }
 
   fprintf(f, "Keccak[r=%d, c=%d] duplex: ", rate, capacity);
-  for (i = 0; i < (rate + 7) / 8; i++) fprintf(f, "%02x ", acc[i]);
+  for (i = 0; i < (rate + 7) / 8; i++)
+    fprintf(f, "%02x ", acc[i]);
   fprintf(f, "\n\n");
 }
 

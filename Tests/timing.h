@@ -7,6 +7,6 @@ questions, please refer to our website: http://keccak.noekeon.org/
 #ifndef _timing_h_
 #define _timing_h_
 
-void doTiming();
+void doTiming(void);
 
 #endif

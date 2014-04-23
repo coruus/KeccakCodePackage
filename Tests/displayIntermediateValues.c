@@ -12,8 +12,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 */
 
 #include <stdio.h>
-#include "displayIntermediateValues.h"
-#include "KeccakF-1600-interface.h"
+#include "Tests/Tests.h"
+#include "KeccakF-1600/KeccakF-1600-interface.h"
 
 FILE* intermediateValueFile = 0;
 int displayLevel = 0;

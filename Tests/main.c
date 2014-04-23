@@ -10,25 +10,14 @@ To the extent possible under law, the implementer has waived all copyright
 and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
-
-#if __APPLE__
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
+#include "Constructions/KeccakDuplex.h"
+#include "Constructions/KeccakSponge.h"
+#include "KeccakF-1600/Reference/KeccakF-1600-reference.h"
+#include "Tests/tests.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "displayIntermediateValues.h"
-#include "genKAT.h"
-#include "KeccakDuplex.h"
-#include "KeccakSponge.h"
-#include "KeccakF-1600-reference.h"
-#include "testDuplex.h"
-#include "testPermutationAndStateMgt.h"
-#include "testSponge.h"
-#include "timing.h"
 
 #ifdef KeccakReference
 void displayPermutationIntermediateValues() {
@@ -219,7 +208,7 @@ void displaySpongeIntermediateValuesFew(
   displaySetIntermediateValueFile(0);
 }
 
-void displaySpongeIntermediateValues() {
+void displaySpongeIntermediateValues(void) {
   displaySpongeIntermediateValuesFew(
       "KeccakSpongeIntermediateValues_r1344c256.txt", 0x01, 1344, 256, 4096);
   displaySpongeIntermediateValuesFew(
@@ -308,7 +297,7 @@ void displayDuplexIntermediateValues() {
 }
 #endif
 
-int main() {
+int main(void) {
   testPermutationAndStateMgt();
   testSpongeWithQueue();
   testSpongeWithoutQueue();

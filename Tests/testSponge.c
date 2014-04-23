@@ -11,10 +11,12 @@ and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
 
+#include "Tests/tests.h"
+#include "Constructions/KeccakSponge.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "KeccakSponge.h"
 
 void testSponge(FILE* f,
                 unsigned int rate,
@@ -37,7 +39,8 @@ void testSponge(FILE* f,
     unsigned int i;
     unsigned int inputByteLengthCeiling = (inputBitLength + 7) / 8;
 
-    for (i = 0; i < inputByteLengthCeiling; i++) input[i] = inputBitLength - i;
+    for (i = 0; i < inputByteLengthCeiling; i++)
+      input[i] = inputBitLength - i;
     if ((inputBitLength % 8) != 0)
       input[inputByteLengthCeiling - 1] &= (1 << (inputBitLength % 8)) - 1;
 
@@ -97,7 +100,8 @@ void testSponge(FILE* f,
     } else
       result = Keccak_SpongeSqueeze(&sponge, output, outputByteSize);
 
-    for (i = 0; i < outputByteSize; i++) acc[i] ^= output[i];
+    for (i = 0; i < outputByteSize; i++)
+      acc[i] ^= output[i];
   }
 
   fprintf(f, "Keccak[r=%d, c=%d]: ", rate, capacity);

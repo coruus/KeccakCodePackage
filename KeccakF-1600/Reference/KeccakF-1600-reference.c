@@ -103,7 +103,8 @@ void KeccakF1600_StateXORLanes(void* state,
                                unsigned int laneCount) {
   unsigned int i;
 
-  for (i = 0; i < laneCount * 8; i++) ((unsigned char*)state)[i] ^= data[i];
+  for (i = 0; i < laneCount * 8; i++)
+    ((unsigned char*)state)[i] ^= data[i];
 }
 
 /* ---------------------------------------------------------------- */
@@ -189,11 +190,14 @@ void theta(UINT64* A) {
 
   for (x = 0; x < 5; x++) {
     C[x] = 0;
-    for (y = 0; y < 5; y++) C[x] ^= A[index(x, y)];
+    for (y = 0; y < 5; y++)
+      C[x] ^= A[index(x, y)];
   }
-  for (x = 0; x < 5; x++) D[x] = ROL64(C[(x + 1) % 5], 1) ^ C[(x + 4) % 5];
   for (x = 0; x < 5; x++)
-    for (y = 0; y < 5; y++) A[index(x, y)] ^= D[x];
+    D[x] = ROL64(C[(x + 1) % 5], 1) ^ C[(x + 4) % 5];
+  for (x = 0; x < 5; x++)
+    for (y = 0; y < 5; y++)
+      A[index(x, y)] ^= D[x];
 }
 
 void rho(UINT64* A) {
@@ -209,7 +213,8 @@ void pi(UINT64* A) {
   UINT64 tempA[25];
 
   for (x = 0; x < 5; x++)
-    for (y = 0; y < 5; y++) tempA[index(x, y)] = A[index(x, y)];
+    for (y = 0; y < 5; y++)
+      tempA[index(x, y)] = A[index(x, y)];
   for (x = 0; x < 5; x++)
     for (y = 0; y < 5; y++)
       A[index(0 * x + 1 * y, 2 * x + 3 * y)] = tempA[index(x, y)];
@@ -222,7 +227,8 @@ void chi(UINT64* A) {
   for (y = 0; y < 5; y++) {
     for (x = 0; x < 5; x++)
       C[x] = A[index(x, y)] ^ ((~A[index(x + 1, y)]) & A[index(x + 2, y)]);
-    for (x = 0; x < 5; x++) A[index(x, y)] = C[x];
+    for (x = 0; x < 5; x++)
+      A[index(x, y)] = C[x];
   }
 }
 

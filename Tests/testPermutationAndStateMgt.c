@@ -11,9 +11,11 @@ and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
 
+#include "KeccakF-1600/KeccakF-1600-interface.h"
+#include "Tests/tests.h"
+
 #include <stdio.h>
 #include <string.h>
-#include "KeccakF-1600-interface.h"
 
 void accumulateBuffer(void* stateAccumulated, const unsigned char* buffer) {
   KeccakF1600_StateXORLanes(stateAccumulated, buffer, 25);
@@ -26,7 +28,7 @@ void accumulateState(void* stateAccumulated, const void* stateTest) {
   accumulateBuffer(stateAccumulated, buffer);
 }
 
-void testPermutationAndStateMgt() {
+void testPermutationAndStateMgt(void) {
   unsigned char stateAccumulated[KeccakF_width / 8];
   unsigned char stateTest[KeccakF_width / 8];
 
@@ -47,7 +49,8 @@ void testPermutationAndStateMgt() {
   {
     unsigned char buffer[KeccakF_laneInBytes + 8];
     unsigned i, lanePosition, offset, length, alignment;
-    for (i = 0; i < sizeof(buffer); i++) buffer[i] = 0xF3 + 5 * i;
+    for (i = 0; i < sizeof(buffer); i++)
+      buffer[i] = 0xF3 + 5 * i;
 
     for (alignment = 0; alignment < 8; alignment++)
       for (lanePosition = 0; lanePosition < 25; lanePosition++)
@@ -150,7 +153,8 @@ void testPermutationAndStateMgt() {
     KeccakF1600_StateExtractLanes(stateAccumulated, buffer, 25);
     f = fopen("TestKeccakF-1600AndStateMgt.txt", "w");
     fprintf(f, "Testing Keccak-f[1600] permutation and state management: ");
-    for (i = 0; i < KeccakF_width / 8; i++) fprintf(f, "%02x ", buffer[i]);
+    for (i = 0; i < KeccakF_width / 8; i++)
+      fprintf(f, "%02x ", buffer[i]);
     fprintf(f, "\n");
     fclose(f);
   }

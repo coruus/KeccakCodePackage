@@ -15,28 +15,27 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #define _displayIntermediateValues_h_
 
 #include <stdio.h>
+#include <stdint.h>
 
 void displaySetIntermediateValueFile(FILE* f);
 void displaySetLevel(int level);
 void displayBytes(int level,
-                  const char* text,
-                  const unsigned char* bytes,
-                  unsigned int size);
+                  const int8_t* text,
+                  const uint8_t* bytes,
+                  uint32_t size);
 void displayBits(int level,
-                 const char* text,
-                 const unsigned char* data,
-                 unsigned int size,
+                 const int8_t* text,
+                 const uint8_t* data,
+                 uint32_t size,
                  int MSBfirst);
-void displayStateAsBytes(int level,
-                         const char* text,
-                         const unsigned char* state);
+void displayStateAsBytes(int level, const int8_t* text, const uint8_t* state);
 void displayStateAs32bitWords(int level,
-                              const char* text,
-                              const unsigned int* state);
+                              const int8_t* text,
+                              const uint32_t* state);
 void displayStateAs64bitWords(int level,
-                              const char* text,
-                              const unsigned long long int* state);
-void displayRoundNumber(int level, unsigned int i);
-void displayText(int level, const char* text);
+                              const int8_t* text,
+                              const uint64_t* state);
+void displayRoundNumber(int level, uint32_t i);
+void displayText(int level, const int8_t* text);
 
 #endif
