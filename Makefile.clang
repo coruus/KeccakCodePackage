@@ -54,7 +54,6 @@ HEADERS_REFERENCE32BI = $(HEADERS_REFERENCE)
 
 HEADERS_OPTIMIZED = \
     $(HEADERS_COMMON) \
-    Common/brg_endian.h \
     Tests/timing.h
 
 HEADERS_OPTIMIZED_64 = \

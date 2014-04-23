@@ -14,7 +14,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #ifndef _KeccakDuplex_h_
 #define _KeccakDuplex_h_
 
-#include "KeccakF-1600-interface.h"
+#include "KeccakF-1600/KeccakF-1600-interface.h"
 
 #ifdef ALIGN
 #undef ALIGN

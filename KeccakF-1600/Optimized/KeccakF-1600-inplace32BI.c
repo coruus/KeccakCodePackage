@@ -11,17 +11,14 @@ and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
 
-#include <string.h>
-#include "brg_endian.h"
-#include "KeccakF-1600-interface.h"
+#include "KeccakF-1600/KeccakF-1600-interface.h"
 
-typedef unsigned char UINT8;
-typedef unsigned int UINT32;
-// WARNING: on 8-bit and 16-bit platforms, this should be replaced by:
-// typedef unsigned long       UINT32;
+#include <stdint.h>
+#include <string.h>
+
 
 #define ROL32(a, offset) \
-  ((((UINT32)a) << (offset)) ^ (((UINT32)a) >> (32 - (offset))))
+  ((((uint32_t)a) << (offset)) ^ (((uint32_t)a) >> (32 - (offset))))
 
 // Credit to Henry S. Warren, Hacker's Delight, Addison-Wesley, 2002
 #define toBitInterleavingAndXOR(low, high, even, odd, temp, temp0, temp1) \
@@ -89,15 +86,15 @@ void KeccakF1600_StateXORBytesInLane(void* state,
                                      const unsigned char* data,
                                      unsigned int offset,
                                      unsigned int length) {
-  UINT8 laneAsBytes[8];
-  UINT32 low, high;
-  UINT32 temp, temp0, temp1;
-  UINT32* stateAsHalfLanes = (UINT32*)state;
+  uint8_t laneAsBytes[8];
+  uint32_t low, high;
+  uint32_t temp, temp0, temp1;
+  uint32_t* stateAsHalfLanes = (uint32_t*)state;
 
   memset(laneAsBytes, 0, 8);
   memcpy(laneAsBytes + offset, data, length);
-  low = *((UINT32*)(laneAsBytes + 0));
-  high = *((UINT32*)(laneAsBytes + 4));
+  low = *((uint32_t*)(laneAsBytes + 0));
+  high = *((uint32_t*)(laneAsBytes + 4));
   toBitInterleavingAndXOR(low,
                           high,
                           stateAsHalfLanes[lanePosition * 2 + 0],
@@ -112,13 +109,13 @@ void KeccakF1600_StateXORBytesInLane(void* state,
 void KeccakF1600_StateXORLanes(void* state,
                                const unsigned char* data,
                                unsigned int laneCount) {
-  const UINT32* pI = (const UINT32*)data;
-  UINT32* pS = state;
-  UINT32 t, x0, x1;
+  const uint32_t* pI = (const uint32_t*)data;
+  uint32_t* pS = state;
+  uint32_t t, x0, x1;
   int i;
   for (i = laneCount - 1; i >= 0; --i) {
-    UINT32 low;
-    UINT32 high;
+    uint32_t low;
+    uint32_t high;
     memcpy(&low, pI++, 4);
     memcpy(&high, pI++, 4);
     toBitInterleavingAndXOR(low, high, *(pS++), *(pS++), t, x0, x1);
@@ -128,11 +125,11 @@ void KeccakF1600_StateXORLanes(void* state,
 /* ---------------------------------------------------------------- */
 
 void KeccakF1600_StateComplementBit(void* state, unsigned int position) {
-  UINT32* stateAsHalfLanes = (UINT32*)state;
+  uint32_t* stateAsHalfLanes = (uint32_t*)state;
   unsigned int lanePosition = position / 64;
   unsigned int zeta = position % 2;
   unsigned int bitInLane = (position % 64) / 2;
-  stateAsHalfLanes[lanePosition * 2 + zeta] ^= (UINT32)1 << bitInLane;
+  stateAsHalfLanes[lanePosition * 2 + zeta] ^= (uint32_t)1 << bitInLane;
 }
 
 /* ---------------------------------------------------------------- */
@@ -148,9 +145,9 @@ void KeccakF1600_StateExtractBytesInLane(const void* state,
                                          unsigned char* data,
                                          unsigned int offset,
                                          unsigned int length) {
-  UINT32* stateAsHalfLanes = (UINT32*)state;
-  UINT32 low, high, temp, temp0, temp1;
-  UINT8 laneAsBytes[8];
+  uint32_t* stateAsHalfLanes = (uint32_t*)state;
+  uint32_t low, high, temp, temp0, temp1;
+  uint8_t laneAsBytes[8];
 
   fromBitInterleaving(stateAsHalfLanes[lanePosition * 2],
                       stateAsHalfLanes[lanePosition * 2 + 1],
@@ -159,8 +156,8 @@ void KeccakF1600_StateExtractBytesInLane(const void* state,
                       temp,
                       temp0,
                       temp1);
-  *((UINT32*)(laneAsBytes + 0)) = low;
-  *((UINT32*)(laneAsBytes + 4)) = high;
+  *((uint32_t*)(laneAsBytes + 0)) = low;
+  *((uint32_t*)(laneAsBytes + 4)) = high;
   memcpy(data, laneAsBytes + offset, length);
 }
 
@@ -169,13 +166,13 @@ void KeccakF1600_StateExtractBytesInLane(const void* state,
 void KeccakF1600_StateExtractLanes(const void* state,
                                    unsigned char* data,
                                    unsigned int laneCount) {
-  UINT32* pI = (UINT32*)data;
-  const UINT32* pS = state;
-  UINT32 t, x0, x1;
+  uint32_t* pI = (uint32_t*)data;
+  const uint32_t* pS = state;
+  uint32_t t, x0, x1;
   int i;
   for (i = laneCount - 1; i >= 0; --i) {
-    UINT32 low;
-    UINT32 high;
+    uint32_t low;
+    uint32_t high;
     fromBitInterleaving(*(pS++), *(pS++), low, high, t, x0, x1);
     memcpy(pI++, &low, 4);
     memcpy(pI++, &high, 4);
@@ -184,7 +181,7 @@ void KeccakF1600_StateExtractLanes(const void* state,
 
 /* ---------------------------------------------------------------- */
 
-static const UINT32 KeccakF1600RoundConstants_int2[2 * 24 + 1] = {
+static const uint32_t KeccakF1600RoundConstants_int2[2 * 24 + 1] = {
     0x00000001UL, 0x00000000UL, 0x00000000UL, 0x00000089UL, 0x00000000UL,
     0x8000008bUL, 0x00000000UL, 0x80008080UL, 0x00000001UL, 0x0000008bUL,
     0x00000001UL, 0x00008000UL, 0x00000001UL, 0x80008088UL, 0x00000001UL,
@@ -306,13 +303,13 @@ void KeccakF1600_StateXORPermuteExtract(void* state,
                                         unsigned char* outData,
                                         unsigned int outLaneCount) {
   {
-    const UINT32* pI = (const UINT32*)inData;
-    UINT32* pS = state;
-    UINT32 t, x0, x1;
+    const uint32_t* pI = (const uint32_t*)inData;
+    uint32_t* pS = state;
+    uint32_t t, x0, x1;
     int i;
     for (i = inLaneCount - 1; i >= 0; --i) {
-      UINT32 low;
-      UINT32 high;
+      uint32_t low;
+      uint32_t high;
       memcpy(&low, pI++, 4);
       memcpy(&high, pI++, 4);
       toBitInterleavingAndXOR(low, high, *(pS++), *(pS++), t, x0, x1);
@@ -320,17 +317,17 @@ void KeccakF1600_StateXORPermuteExtract(void* state,
   }
 
   {
-    UINT32 Da0, De0, Di0, Do0, Du0;
-    UINT32 Da1, De1, Di1, Do1, Du1;
-    UINT32 Ca0, Ce0, Ci0, Co0, Cu0;
-    UINT32 Cx, Cy, Cz, Cw;
+    uint32_t Da0, De0, Di0, Do0, Du0;
+    uint32_t Da1, De1, Di1, Do1, Du1;
+    uint32_t Ca0, Ce0, Ci0, Co0, Cu0;
+    uint32_t Cx, Cy, Cz, Cw;
 #define Ba Ca0
 #define Be Ce0
 #define Bi Ci0
 #define Bo Co0
 #define Bu Cu0
-    const UINT32* pRoundConstants = KeccakF1600RoundConstants_int2;
-    UINT32* stateAsHalfLanes = (UINT32*)state;
+    const uint32_t* pRoundConstants = KeccakF1600RoundConstants_int2;
+    uint32_t* stateAsHalfLanes = (uint32_t*)state;
 #define Aba0 stateAsHalfLanes[0]
 #define Aba1 stateAsHalfLanes[1]
 #define Abe0 stateAsHalfLanes[2]
@@ -895,13 +892,13 @@ void KeccakF1600_StateXORPermuteExtract(void* state,
   }
 
   {
-    UINT32* pI = (UINT32*)outData;
-    const UINT32* pS = state;
-    UINT32 t, x0, x1;
+    uint32_t* pI = (uint32_t*)outData;
+    const uint32_t* pS = state;
+    uint32_t t, x0, x1;
     int i;
     for (i = outLaneCount - 1; i >= 0; --i) {
-      UINT32 low;
-      UINT32 high;
+      uint32_t low;
+      uint32_t high;
       fromBitInterleaving(*(pS++), *(pS++), low, high, t, x0, x1);
       memcpy(pI++, &low, 4);
       memcpy(pI++, &high, 4);

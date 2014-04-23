@@ -14,7 +14,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #ifndef _KeccakSponge_h_
 #define _KeccakSponge_h_
 
-#include "KeccakF-1600-interface.h"
+#include "KeccakF-1600/KeccakF-1600-interface.h"
 
 // on Mac OS-X and possibly others, ALIGN(x) is defined in param.h, and -Werror
 // chokes on the redef.
@@ -22,7 +22,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #undef ALIGN
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
 #define ALIGN __attribute__((aligned(32)))
 #elif defined(_MSC_VER)
 #define ALIGN __declspec(align(32))

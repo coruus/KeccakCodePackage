@@ -1,6 +1,7 @@
 #ifndef GENKAT_H
 #define GENKAT_H
 #include "Modes/KeccakHash.h"
+
 #include <stdint.h>
 
 typedef enum {

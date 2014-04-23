@@ -11,21 +11,19 @@ and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
 
+#include "KeccakF-1600/KeccakF-1600-interface.h"
+
 #include <string.h>
 #include <stdlib.h>
-#include "brg_endian.h"
-#include "KeccakF-1600-interface.h"
 
 #define USE_MEMSET
 //#define DIVISION_INSTRUCTION    //comment if no division instruction or more
 // compact when not using division
 #define UNROLL_CHILOOP  // comment more compact using for loop
 
-typedef unsigned char UINT8;
-typedef unsigned long long int UINT64;
 typedef unsigned int tSmallUInt; /*INFO It could be more optimized to use
                                     "unsigned char" on an 8-bit CPU    */
-typedef UINT64 tKeccakLane;
+typedef uint64_t tKeccakLane;
 
 #if defined(__GNUC__)
 #define ALIGN __attribute__((aligned(32)))
@@ -40,36 +38,36 @@ typedef UINT64 tKeccakLane;
 #elif defined(UseSHLD)
 #define ROL64(x, N)                                             \
   ({                                                            \
-    register UINT64 __out;                                      \
-    register UINT64 __in = x;                                   \
+    register uint64_t __out;                                      \
+    register uint64_t __in = x;                                   \
     __asm__("shld %2,%0,%0" : "=r"(__out) : "0"(__in), "i"(N)); \
     __out;                                                      \
   })
 #else
 #define ROL64(a, offset) \
-  ((((UINT64)a) << offset) ^ (((UINT64)a) >> (64 - offset)))
+  ((((uint64_t)a) << offset) ^ (((uint64_t)a) >> (64 - offset)))
 #endif
 
 #define cKeccakNumberOfRounds 24
 
-const UINT8 KeccakF_RotationConstants[25] = {1,  3,  6,  10, 15, 21, 28, 36,
+const uint8_t KeccakF_RotationConstants[25] = {1,  3,  6,  10, 15, 21, 28, 36,
                                              45, 55, 2,  14, 27, 41, 56, 8,
                                              25, 43, 62, 18, 39, 61, 20, 44};
 
-const UINT8 KeccakF_PiLane[25] = {10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4,
+const uint8_t KeccakF_PiLane[25] = {10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4,
                                   15, 23, 19, 13, 12, 2, 20, 14, 22, 9,  6,  1};
 
 #if defined(DIVISION_INSTRUCTION)
 #define MOD5(argValue) ((argValue) % 5)
 #else
-const UINT8 KeccakF_Mod5[10] = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
+const uint8_t KeccakF_Mod5[10] = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
 #define MOD5(argValue) KeccakF_Mod5[argValue]
 #endif
 
 /* ---------------------------------------------------------------- */
 
-static tKeccakLane KeccakF1600_GetNextRoundConstant(UINT8* LFSR);
-static tKeccakLane KeccakF1600_GetNextRoundConstant(UINT8* LFSR) {
+static tKeccakLane KeccakF1600_GetNextRoundConstant(uint8_t* LFSR);
+static tKeccakLane KeccakF1600_GetNextRoundConstant(uint8_t* LFSR) {
   tSmallUInt i;
   tKeccakLane roundConstant;
   tSmallUInt doXOR;
@@ -87,7 +85,7 @@ static tKeccakLane KeccakF1600_GetNextRoundConstant(UINT8* LFSR) {
 
     if (doXOR != 0) roundConstant ^= (tKeccakLane)1ULL << (i - 1);
   }
-  *LFSR = (UINT8)tempLSFR;
+  *LFSR = (uint8_t)tempLSFR;
   return (roundConstant);
 }
 
@@ -152,7 +150,7 @@ void KeccakF1600_StatePermute(void* argState) {
   tKeccakLane temp;
   tKeccakLane BC[5];
   tKeccakLane* state;
-  UINT8 LFSRstate;
+  uint8_t LFSRstate;
 
   state = argState;
   LFSRstate = 0x01;
@@ -208,7 +206,7 @@ void KeccakF1600_StateExtractBytesInLane(const void* state,
                                          unsigned char* data,
                                          unsigned int offset,
                                          unsigned int length) {
-  memcpy(data, ((UINT8*)&((tKeccakLane*)state)[lanePosition]) + offset, length);
+  memcpy(data, ((uint8_t*)&((tKeccakLane*)state)[lanePosition]) + offset, length);
 }
 
 /* ---------------------------------------------------------------- */

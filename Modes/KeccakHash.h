@@ -14,7 +14,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #ifndef _KeccakHashInterface_h_
 #define _KeccakHashInterface_h_
 
-#include "KeccakSponge.h"
+#include "Constructions/KeccakSponge.h"
 
 typedef unsigned char BitSequence;
 typedef unsigned long long DataLength;
