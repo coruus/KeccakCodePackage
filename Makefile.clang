@@ -23,7 +23,8 @@ SOURCES_REFERENCE32BI = \
 
 SOURCES_OPTIMIZED = \
     $(SOURCES_COMMON) \
-    Tests/timing.c
+    Tests/timing.c \
+    Tests/dotiming.c
 
 SOURCES_OPTIMIZED_64 = \
     $(SOURCES_OPTIMIZED) \
@@ -93,7 +94,7 @@ OBJECTS_OPTIMIZED_64 = $(addprefix $(BINDIR_OPTIMIZED_64)/, $(notdir $(patsubst 
 
 OBJECTS_INPLACE32BI = $(addprefix $(BINDIR_INPLACE32BI)/, $(notdir $(patsubst %.c,%.o,$(SOURCES_INPLACE32BI))))
 
-CC = clang-3.5 -Wno-sign-conversion -Wpedantic -Wno-error=padded -Wno-error=documentation -march=native -fsanitize=local-bounds -fsanitize=address -fsanitize=undefined -g -std=gnu11 -Wall -Weverything -Wextra -pedantic -fcolor-diagnostics
+CC = clang-3.5 -I. -Wno-sign-conversion -Wpedantic -Wno-error=padded -Wno-error=documentation -march=native -fsanitize=local-bounds -fsanitize=address -fsanitize=undefined -g -std=gnu11 -Wall -Weverything -Wextra -pedantic -fcolor-diagnostics
 
 CFLAGS = -march=native
 

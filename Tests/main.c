@@ -20,7 +20,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <string.h>
 
 #ifdef KeccakReference
-void displayPermutationIntermediateValues() {
+void displayPermutationIntermediateValues(void) {
   unsigned char state[KeccakF_width / 8];
 #ifdef KeccakReference32BI
   const char* fileName = "KeccakF-1600-IntermediateValues32BI.txt";
@@ -272,7 +272,7 @@ void displayDuplexIntermediateValuesOne(FILE* f,
   }
 }
 
-void displayDuplexIntermediateValues() {
+void displayDuplexIntermediateValues(void) {
   char fileName[256];
   FILE* f;
   unsigned int rate;

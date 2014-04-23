@@ -13,23 +13,15 @@ This code is based on genKAT.c by NIST.
 #include <ctype.h>
 
 #include "Modes/KeccakHash.h"
+#include "Tests/tests.h"
 
 #define MAX_MARKER_LEN 50
 #define SUBMITTER_INFO_LEN 128
 
-typedef enum {
-  KAT_SUCCESS = 0,
-  KAT_FILE_OPEN_ERROR = 1,
-  KAT_HEADER_ERROR = 2,
-  KAT_DATA_ERROR = 3,
-  KAT_HASH_ERROR = 4
-} STATUS_CODES;
-
 #define ExcludeExtremelyLong
 #define SqueezingOutputLength 4096
 
-STATUS_CODES
-genKAT_main(void) {
+STATUS_CODES genKAT_main(void) {
   // The following instances are from the FIPS 202 draft.
   // http://csrc.nist.gov/publications/
   //

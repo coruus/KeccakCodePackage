@@ -20,22 +20,22 @@ http://creativecommons.org/publicdomain/zero/1.0/
 void displaySetIntermediateValueFile(FILE* f);
 void displaySetLevel(int level);
 void displayBytes(int level,
-                  const int8_t* text,
+                  const char* text,
                   const uint8_t* bytes,
                   uint32_t size);
 void displayBits(int level,
-                 const int8_t* text,
+                 const char* text,
                  const uint8_t* data,
                  uint32_t size,
                  int MSBfirst);
-void displayStateAsBytes(int level, const int8_t* text, const uint8_t* state);
+void displayStateAsBytes(int level, const char* text, const uint8_t* state);
 void displayStateAs32bitWords(int level,
-                              const int8_t* text,
+                              const char* text,
                               const uint32_t* state);
 void displayStateAs64bitWords(int level,
-                              const int8_t* text,
+                              const char* text,
                               const uint64_t* state);
 void displayRoundNumber(int level, uint32_t i);
-void displayText(int level, const int8_t* text);
+void displayText(int level, const char* text);
 
 #endif

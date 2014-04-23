@@ -30,9 +30,8 @@ questions, please refer to our website: http://keccak.noekeon.org/
 
 #endif
 
-
-uint32_t HiResTime(void) /* return the current value of time stamp counter */
-{
+/* return the current value of time stamp counter */
+uint32_t HiResTime(void) {
 #if defined(HI_RES_CLK_OK)
   uint32_t x[2];
 #if defined(__BORLANDC__)
@@ -65,8 +64,6 @@ uint32_t HiResTime(void) /* return the current value of time stamp counter */
   return 0;
 #endif /* defined(HI_RES_CLK_OK) */
 }
-
-#define TIMER_SAMPLE_CNT (100)
 
 uint32_t calibrate(void) {
   uint32_t dtMin = 0xFFFFFFFF; /* big number to start */
