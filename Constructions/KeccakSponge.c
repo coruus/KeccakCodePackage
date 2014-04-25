@@ -12,10 +12,10 @@ http://creativecommons.org/publicdomain/zero/1.0/
 */
 
 #include <string.h>
-#include "KeccakSponge.h"
-#include "KeccakF-1600-interface.h"
+#include "Constructions/KeccakSponge.h"
+#include "KeccakF-1600/KeccakF-1600-interface.h"
 #ifdef KeccakReference
-#include "displayIntermediateValues.h"
+#include "Tests/displayIntermediateValues.h"
 #endif
 
 /* ---------------------------------------------------------------- */
