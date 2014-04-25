@@ -22,6 +22,7 @@ SOURCES_REFERENCE32BI = \
 
 SOURCES_OPTIMIZED = \
     $(SOURCES_COMMON) \
+		Tests/dotiming.c  \
     Tests/timing.c
 
 SOURCES_OPTIMIZED_64 = \
@@ -51,7 +52,7 @@ HEADERS_REFERENCE32BI = $(HEADERS_REFERENCE)
 
 HEADERS_OPTIMIZED = \
     $(HEADERS_COMMON) \
-    Common/brg_endian.h \
+    Tests/dotiming.h \
     Tests/timing.h
 
 HEADERS_OPTIMIZED_64 = \
@@ -91,15 +92,15 @@ OBJECTS_OPTIMIZED_64 = $(addprefix $(BINDIR_OPTIMIZED_64)/, $(notdir $(patsubst 
 
 OBJECTS_INPLACE32BI = $(addprefix $(BINDIR_INPLACE32BI)/, $(notdir $(patsubst %.c,%.o,$(SOURCES_INPLACE32BI))))
 
-CC = gcc
+CC = gcc-4.8 -std=gnu11 -I.
 
 CFLAGS_REFERENCE = -DKeccakReference -O
 
 CFLAGS_REFERENCE32BI = $(CFLAGS_REFERENCE) -DKeccakReference32BI
 
-CFLAGS_OPTIMIZED_32 = -fomit-frame-pointer -O3 -g0 -march=native -mtune=native
+CFLAGS_OPTIMIZED_32 = -fomit-frame-pointer -O3 -g0 -march=native
 
-CFLAGS_OPTIMIZED_64 = -fomit-frame-pointer -O3 -g0 -march=native -mtune=native -m64
+CFLAGS_OPTIMIZED_64 = -fomit-frame-pointer -O3 -g0 -march=native
 
 VPATH = Common/ Constructions/ KeccakF-1600/ KeccakF-1600/Optimized/ KeccakF-1600/Reference/ Modes/ Tests/
 
