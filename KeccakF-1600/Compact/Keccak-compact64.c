@@ -11,10 +11,11 @@ and related or neighboring rights to the source code in this file.
 http://creativecommons.org/publicdomain/zero/1.0/
 */
 
-#include "KeccakF-1600/KeccakF-1600-interface.h"
-
 #include <string.h>
+#include <stdint.h>
 #include <stdlib.h>
+
+#include "KeccakF-1600/KeccakF-1600-interface.h"
 
 #define USE_MEMSET
 //#define DIVISION_INSTRUCTION    //comment if no division instruction or more
