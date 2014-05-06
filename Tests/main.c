@@ -18,6 +18,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
 
 #ifdef KeccakReference
 void displayPermutationIntermediateValues(void) {
@@ -28,6 +29,30 @@ void displayPermutationIntermediateValues(void) {
   const char* fileName = "KeccakF-1600-IntermediateValues.txt";
 #endif
   FILE* f;
+=======
+#include "displayIntermediateValues.h"
+#include "genKAT.h"
+#include "KeccakDuplex.h"
+#include "KeccakSponge.h"
+#include "testDuplex.h"
+#include "testPermutationAndStateMgt.h"
+#include "testSponge.h"
+#include "timing.h"
+
+#ifdef KeccakReference
+
+#include "KeccakF-1600-reference.h"
+
+void displayPermutationIntermediateValues()
+{
+    unsigned char state[KeccakF_width/8];
+    #ifdef KeccakReference32BI
+    const char *fileName = "KeccakF-1600-IntermediateValues32BI.txt";
+    #else
+    const char *fileName = "KeccakF-1600-IntermediateValues.txt";
+    #endif
+    FILE *f;
+>>>>>>> 36c48ee... Cleaned-up and automated makefile
 
   f = fopen(fileName, "w");
   if (f == NULL)
