@@ -92,9 +92,9 @@ OBJECTS_OPTIMIZED_64 = $(addprefix $(BINDIR_OPTIMIZED_64)/, $(notdir $(patsubst 
 
 OBJECTS_INPLACE32BI = $(addprefix $(BINDIR_INPLACE32BI)/, $(notdir $(patsubst %.c,%.o,$(SOURCES_INPLACE32BI))))
 
-CC = clang-3.5 -I. -Wno-conversion -Wno-documentation -Wno-padded -Wno-conversion -Wno-sign-conversion -Wpedantic -Wno-error=padded -Wno-error=documentation -march=native -fsanitize=local-bounds -fsanitize=undefined -g -std=gnu11 -Wall -Weverything -Wextra -Wpedantic -pedantic -fcolor-diagnostics -O0 -fsanitize=address-full -fsanitize=alignment -fsanitize=bool -fsanitize=bounds -fsanitize=enum -fsanitize=float-cast-overflow -fsanitize=float-divide-by-zero -fsanitize=null -fsanitize=object-size -fsanitize=return -fsanitize=shift -fsanitize=signed-integer-overflow -fsanitize=unreachable -fsanitize=vla-bound
+#CC = clang-3.5 -std=c99 -I. -Wno-conversion -Wno-documentation -Wno-padded -Wno-conversion -Wno-sign-conversion -Wpedantic -Wno-error=padded -Wno-error=documentation -march=native -fsanitize=local-bounds -fsanitize=undefined -g -Wall -Weverything -Wextra -Wpedantic -pedantic -fcolor-diagnostics -O0 -fsanitize=address-full -fsanitize=alignment -fsanitize=bool -fsanitize=bounds -fsanitize=enum -fsanitize=float-cast-overflow -fsanitize=float-divide-by-zero -fsanitize=null -fsanitize=object-size -fsanitize=return -fsanitize=shift -fsanitize=signed-integer-overflow -fsanitize=unreachable -fsanitize=vla-bound
 
-CFLAGS = -march=native
+#CFLAGS = -march=native
 
 CFLAGS_REFERENCE = $(CFLAGS) -DKeccakReference -O
 CFLAGS_REFERENCE32BI = $(CFLAGS_REFERENCE) -DKeccakReference32BI

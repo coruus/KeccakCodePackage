@@ -44,7 +44,7 @@ uint_32t HiResTime(void)           /* return the current value of time stamp cou
     _asm { _emit 0fh }; _asm { _emit 031h };
     _asm { mov x[0],eax };
 #endif
-#elif defined(__MINGW_H) || defined(__GNUC__)
+#elif defined(__MINGW_H) || defined(__GNUC__) || 1
 #define COMPILER_ID "GCC"
     asm volatile("rdtsc" : "=a"(x[0]), "=d"(x[1]));
 #else
@@ -54,7 +54,7 @@ uint_32t HiResTime(void)           /* return the current value of time stamp cou
 #else
     /* avoid annoying MSVC 9.0 compiler warning #4720 in ANSI mode! */
 #if (!defined(_MSC_VER)) || (!defined(__STDC__)) || (_MSC_VER < 1300)
-    FatalError("No support for RDTSC on this CPU platform\n");
+    //FatalError("No support for RDTSC on this CPU platform\n");
 #endif
     return 0;
 #endif /* defined(HI_RES_CLK_OK) */

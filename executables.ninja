@@ -1,0 +1,8 @@
+#$b/KeccakDuplex.o $b/KeccakSponge.o $b/KeccakHash.o $b/genKAT.o $b/main.o $b/testDuplex.o $b/testPermutationAndStateMgt.o $b/testSponge.o $b/displayIntermediateValues.o $b/timing.o
+build $b/KeccakReference: cexec $b/KeccakF-1600-reference.o $b/KeccakDuplex.o $b/KeccakSponge.o $b/KeccakHash.o $b/genKAT.o $b/main.o $b/testDuplex.o $b/testPermutationAndStateMgt.o $b/testSponge.o $b/displayIntermediateValues.o $b/timing.o
+  cflags = $cflags -DKeccakReference
+build $b/KeccakReference32BI: cexec $b/KeccakF-1600-inplace32BI.o $b/KeccakDuplex.o $b/KeccakSponge.o $b/KeccakHash.o $b/genKAT.o $b/main.o $b/testDuplex.o $b/testPermutationAndStateMgt.o $b/testSponge.o $b/displayIntermediateValues.o $b/timing.o
+  cflags = $cflags -DKeccakReference32BI
+build $b/KeccakOptimized64: cexec $b/KeccakF-1600-opt64.o $b/KeccakDuplex.o $b/KeccakSponge.o $b/KeccakHash.o $b/genKAT.o $b/main.o $b/testDuplex.o $b/testPermutationAndStateMgt.o $b/testSponge.o $b/displayIntermediateValues.o $b/timing.o
+build $b/KeccakInplace32BI: cexec $b/KeccakF-1600-inplace32BI.o $b/KeccakDuplex.o $b/KeccakSponge.o $b/KeccakHash.o $b/genKAT.o $b/main.o $b/testDuplex.o $b/testPermutationAndStateMgt.o $b/testSponge.o $b/displayIntermediateValues.o $b/timing.o
+build $b/KeccakCompact: cexec $b/KeccakF-1600-compact.o $b/KeccakDuplex.o $b/KeccakSponge.o $b/KeccakHash.o $b/genKAT.o $b/main.o $b/testDuplex.o $b/testPermutationAndStateMgt.o $b/testSponge.o $b/displayIntermediateValues.o $b/timing.o

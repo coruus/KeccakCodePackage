@@ -1,0 +1,25 @@
+# Definitions for GCC-compatible front-ends
+rule c
+  deps = gcc
+  depfile = $out.d
+  command = $cc $depsflag $out.d $cflags -c $in -o $out
+
+rule cexec
+  deps = gcc
+  depfile = $out.d
+  command = $cc $depsflag $out.d $cflags $in -o $out
+
+b = build
+cc = gcc
+depsflag = -MMD -MF
+includes = -ICommon -IConstructions -IModes -ITestVectors -ITests -IKeccakF-1600 -IKeccakF-1600/Optimized -IKeccakF-1600/Reference -IKeccakF-1600/Compact
+cflags = $includes -std=c11 -Wall -Wpedantic -Wextra
+subninja sources.ninja
+subninja executables.ninja
+
+
+#b = build32
+#c = gcc
+#cflags = $cflags -m32
+#subninja sources.ninja
+#subninja executables.ninja

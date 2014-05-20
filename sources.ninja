@@ -1,0 +1,38 @@
+cflagsref = -DKeccakReference
+build $b/Keccak-compact64.o: c KeccakF-1600/Compact/Keccak-compact64.c
+build $b/KeccakF-1600-inplace32BI.o: c KeccakF-1600/Optimized/KeccakF-1600-inplace32BI.c
+build $b/KeccakF-1600-opt64.o: c KeccakF-1600/Optimized/KeccakF-1600-opt64.c
+build $b/KeccakF-1600-reference.o: c KeccakF-1600/Reference/KeccakF-1600-reference.c
+  cflags = $cflags -DKeccakReference
+build build/KeccakF-1600-reference32BI.o: c KeccakF-1600/Reference/KeccakF-1600-reference32BI.c
+  cflags = $cflags -DKeccakReference32BI
+build $b/KeccakHash.o: c Modes/KeccakHash.c
+build $b/displayIntermediateValues.o: c Tests/displayIntermediateValues.c
+build $b/genKAT.o: c Tests/genKAT.c
+build $b/main.o: c Tests/main.c
+build $b/testDuplex.o: c Tests/testDuplex.c
+build $b/testPermutationAndStateMgt.o: c Tests/testPermutationAndStateMgt.c
+build $b/testSponge.o: c Tests/testSponge.c
+build $b/KeccakSponge.o: c Constructions/KeccakSponge.c
+build $b/KeccakDuplex.o: c Constructions/KeccakDuplex.c
+build $b/timing.o: c Tests/timing.c
+build $b/KeccakF-1600-compact.o: c KeccakF-1600/Compact/Keccak-compact64.c
+
+#cflags = $cflags -m32
+#build build32/Keccak-compact64.o: c KeccakF-1600/Compact/Keccak-compact64.c
+#build build32/KeccakF-1600-inplace32BI.o: c KeccakF-1600/Optimized/KeccakF-1600-inplace32BI.c
+#build build32/KeccakF-1600-opt64.o: c KeccakF-1600/Optimized/KeccakF-1600-opt64.c
+#build build32/KeccakF-1600-reference.o: c KeccakF-1600/Reference/KeccakF-1600-reference.c
+#  cflags = $cflags -DKeccakReference
+#build build32/KeccakF-1600-reference32BI.o: c KeccakF-1600/Reference/KeccakF-1600-reference32BI.c
+#  cflags = $cflags -DKeccakReference32BI
+#build build32/KeccakHash.o: c Modes/KeccakHash.c
+#build build32/displayIntermediateValues.o: c Tests/displayIntermediateValues.c
+#build build32/genKAT.o: c Tests/genKAT.c
+#build build32/main.o: c Tests/main.c
+#build build32/testDuplex.o: c Tests/testDuplex.c
+#build build32/testPermutationAndStateMgt.o: c Tests/testPermutationAndStateMgt.c
+#build build32/testSponge.o: c Tests/testSponge.c
+#build build32/KeccakSponge.o: c Constructions/KeccakSponge.c
+#build build32/KeccakDuplex.o: c Constructions/KeccakDuplex.c
+#build build32/timing.o: c Tests/timing.c
