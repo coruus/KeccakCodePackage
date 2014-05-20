@@ -570,6 +570,12 @@
 				ONLY_ACTIVE_ARCH = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Weverything",
+					"-Wall",
+					"-Wpedantic",
+					"-Wextra",
+				);
 			};
 			name = Debug;
 		};
@@ -614,6 +620,12 @@
 				ONLY_ACTIVE_ARCH = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Weverything",
+					"-Wall",
+					"-Wpedantic",
+					"-Wextra",
+				);
 			};
 			name = Release;
 		};
@@ -731,6 +743,7 @@
 				7AF1054B19228308009A11D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7AF1055619228320009A11D7 /* Build configuration list for PBXNativeTarget "KeccakOptimized64" */ = {
 			isa = XCConfigurationList;
@@ -739,6 +752,7 @@
 				7AF1055819228320009A11D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7AF105631922832D009A11D7 /* Build configuration list for PBXNativeTarget "KeccakOptimized32BI" */ = {
 			isa = XCConfigurationList;
@@ -747,6 +761,7 @@
 				7AF105651922832D009A11D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7AF105701922833A009A11D7 /* Build configuration list for PBXNativeTarget "KeccakCompact" */ = {
 			isa = XCConfigurationList;
@@ -755,6 +770,7 @@
 				7AF105721922833A009A11D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
