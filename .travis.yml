@@ -1,0 +1,24 @@
+env:
+  global:
+   - secure: "ap6aoJvH9RIhCwo6ZuSyG7Axox9EsFziKYL9btxM/JvkeCdoLn7610Q73GGRKYjqV8D0Uzla9Ixv7L1aEwz0dk15ykt9mZz5Y/Q5Ff2Etw9EkjJB3SFrBtt8Kg8BcaNtE3pqluQEudO/hf9tBg5kB/ivSNCqeJSCmnDPQXYaDeg="
+
+addons:
+  coverity_scan:
+    project:
+      name: "coruus/KeccakCodePackage"
+      description: "Keccak code package"
+    notification_email: coruus@gmail.com
+    build_command_prepend: "make -f Makefile"
+    build_command:   "make -f bin/build/Makefile"
+    branch_pattern: coverity_scan
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq xsltproc
+install:
+  - make -f Makefile 
+script: 
+  - make -f bin/build/Makefile
+compiler:
+  - clang
+  - gcc
