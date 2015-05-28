@@ -9,16 +9,16 @@ addons:
       description: "Keccak code package"
     notification_email: coruus@gmail.com
     build_command_prepend: "make -f Makefile"
-    build_command:   "make -f bin/build/Makefile .PHONY"
+    build_command:   "make -f Makefile all"
     branch_pattern: coverity_scan
 
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq xsltproc
 install:
-  - make -f Makefile 
+  - make bin/build/Makefile
 script: 
-  - make -f bin/build/Makefile .PHONY
+  - make all
 compiler:
   - clang
   - gcc
