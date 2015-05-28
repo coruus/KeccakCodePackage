@@ -9,7 +9,7 @@ addons:
       description: "Keccak code package"
     notification_email: coruus@gmail.com
     build_command_prepend: "make -f Makefile"
-    build_command:   "make -f bin/build/Makefile"
+    build_command:   "make -f bin/build/Makefile .PHONY"
     branch_pattern: coverity_scan
 
 before_install:
@@ -18,7 +18,7 @@ before_install:
 install:
   - make -f Makefile 
 script: 
-  - make -f bin/build/Makefile
+  - make -f bin/build/Makefile .PHONY
 compiler:
   - clang
   - gcc
